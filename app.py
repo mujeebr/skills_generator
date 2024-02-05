@@ -1,66 +1,39 @@
+
+
 import streamlit as st
-from langchain.llms import GooglePalm
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.chains import SequentialChain
+import google.generativeai as palm
 
+# Configure the Google Palm API
+palm.configure(api_key="AIzaSyAA28rGYJnOsGasVGEQ-dJRHXqLNTVEQz4")
 
-# Function to generate skills and companies based on the job role
-def generate_skills_and_companies(job_role):
-    # Initialize Google's Palm LLM
-    llm = GooglePalm(google_api_key='AIzaSyAA28rGYJnOsGasVGEQ-dJRHXqLNTVEQz4', temperature=0)  # Replace with your Google API Key
+# Define the Streamlit app
+def main():
+    # Set the title and description
+    st.title("Skills and Companies Recommender")
+    st.subheader("Developed by Mujeeb")
+    st.sidebar.image("odinschool1.jpg")
+    st.write("Enter the job role to get recommendations.")
 
-    # Chain 1: This chain is for Job role
-    prompt_template_name = PromptTemplate(
-        input_variables=['job_role'],
-        template="""I want to apply for a {job_role} role. Please help me with the desired skills and ensure you are 
-        giving correct skills as it is critical"""
-    )
+    # Get user input for job role
+    job_role = st.text_input("Enter a job role:")
 
-    skills_chain = LLMChain(llm=llm, prompt=prompt_template_name, output_key="skills")
+    # Define the prompt based on the job role input
+    prompt = f'''What are the skills required for a {job_role}? and the top companies to apply to?
+skills: name skills without description
+companies: name top 10 companies
+'''
 
-    # Chain 2: This is for companies
-    prompt_template_items = PromptTemplate(
-        input_variables=['companies'],
-        template="""Suggest some companies to apply for {job_role}. Return it as a comma separated string"""
-    )
+    # Generate text based on the prompt and user input
+    if st.button("Generate"):
+        with st.spinner("Generating recommendations..."):
+            completion = palm.generate_text(
+                model='models/text-bison-001',
+                prompt=prompt,
+                temperature=0.1
+            )
+        st.subheader("Generated Recommendations:")
+        st.write(completion.result)
 
-    companies_chain = LLMChain(llm=llm, prompt=prompt_template_items, output_key="companies")
-
-    chain = SequentialChain(
-        chains=[skills_chain, companies_chain],
-        input_variables=['job_role'],
-        output_variables=['skills', "companies"]
-    )
-
-    response = chain({'job_role': job_role})
-
-    return response
-
-# Streamlit app
-st.title("Skills and Companies Recommendation App")
-st.subheader("Developed by Mujeeb")
-
-# Sidebar with image and additional options
-st.sidebar.image("odinschool1.jpg", use_column_width=True)
-
-# Main content area
-job_role = st.text_input("Enter the job role:")
-
-if st.button("Generate"):
-    with st.spinner("Generating recommendations..."):
-        output = generate_skills_and_companies(job_role)
-
-    if output:
-        st.subheader("Skills:")
-        skills = output['skills'].split('\n')
-        for skill in skills:
-            skill = skill.strip('* ').strip()
-            st.write(skill)
-
-        st.subheader("Companies:")
-        companies = output['companies'].split('\n')
-        for company in companies:
-            company = company.strip('* ').strip()
-            st.write(company)
-
+# Run the app
+if __name__ == "__main__":
+    main()
