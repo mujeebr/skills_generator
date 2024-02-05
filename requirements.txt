@@ -1,3 +1,2 @@
 streamlit
-langchain 0.0.350
-google-generativeai
+langchain
