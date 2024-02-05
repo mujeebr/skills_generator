@@ -2,3 +2,4 @@ streamlit
 langchain
 -U langchain-community
 google-generativeai
+pip install google-generativeai
