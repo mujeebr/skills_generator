@@ -1,2 +1,2 @@
 streamlit
-langchain
+langchain 0.0.350
