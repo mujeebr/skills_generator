@@ -3,6 +3,7 @@ from langchain.llms import GooglePalm
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
+
 # Function to generate skills and companies based on the job role
 def generate_skills_and_companies(job_role):
     # Initialize Google's Palm LLM
@@ -12,7 +13,7 @@ def generate_skills_and_companies(job_role):
     prompt_template_name = PromptTemplate(
         input_variables=['job_role'],
         template="""I want to apply for a {job_role} role. Please help me with the desired skills and ensure you are 
-        giving correct skills as it is critical."""
+        giving correct skills as it is critical"""
     )
 
     skills_chain = LLMChain(llm=llm, prompt=prompt_template_name, output_key="skills")
@@ -37,10 +38,17 @@ def generate_skills_and_companies(job_role):
 
 # Streamlit app
 st.title("Skills and Companies Recommendation App")
-job_role = st.text_input("Enter a job role:")
+st.subheader("Developed by Mujeeb")
+
+# Sidebar with image and additional options
+st.sidebar.image("/Users/shaikmujeeburrahman/Downloads/odinschool1.jpg", use_column_width=True)
+
+# Main content area
+job_role = st.text_input("Enter the job role:")
 
 if st.button("Generate"):
-    output = generate_skills_and_companies(job_role)
+    with st.spinner("Generating recommendations..."):
+        output = generate_skills_and_companies(job_role)
 
     if output:
         st.subheader("Skills:")
@@ -54,9 +62,4 @@ if st.button("Generate"):
         for company in companies:
             company = company.strip('* ').strip()
             st.write(company)
-
-# Adding an image to the app
-st.sidebar.image("/Users/shaikmujeeburrahman/Downloads/odinschool1.jpg", use_column_width=True)
-
-# "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"
 
