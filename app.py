@@ -41,7 +41,7 @@ st.title("Skills and Companies Recommendation App")
 st.subheader("Developed by Mujeeb")
 
 # Sidebar with image and additional options
-st.sidebar.image("/Users/shaikmujeeburrahman/Downloads/odinschool1.jpg", use_column_width=True)
+st.sidebar.image("odinschool1.jpg", use_column_width=True)
 
 # Main content area
 job_role = st.text_input("Enter the job role:")
