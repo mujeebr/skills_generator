@@ -3,6 +3,7 @@ from langchain.llms import GooglePalm
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.chains import SequentialChain
+import google-generativeai 
 
 # Function to generate skills and companies based on the job role
 def generate_skills_and_companies(job_role):
