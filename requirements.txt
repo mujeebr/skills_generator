@@ -1,5 +1,3 @@
 streamlit
-langchain
--U langchain-community
-google-generativeai
-pip install google-generativeai
+
+langchain==0.1.5
